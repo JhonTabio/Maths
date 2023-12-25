@@ -25,7 +25,6 @@ int main()
 
 	while(1)
 	{
-		printf("going to print\n");
 		printCartesianPlane(plane, showLines);
 
 		for(int i = 0; i < width; i++)
@@ -49,17 +48,15 @@ int main()
 				printf("Resize plane to (width, height): ");
 				scanf("%d %d", &width, &height);
 				int res = resizeCartesianPlane(plane, width, height);
-				printf("Res: %d\n", res);
 
 				if(!res)
 				{
-				  printf("Destorying, resize was NULL");
+				  printf("There was an error resizing\n");
 					destroyCartesianPlane(plane);
 					return 1;
 				}
 
 				clearCartesianPlane(plane);
-				printf("Clear Plane\n");
 				// Add the objs back
 				break;
 			case 'f':
@@ -74,12 +71,12 @@ int main()
 				break;
 			case 't':
 			case 'T':
-				printf("Toggle lines: ");
-				scanf("%d", &showLines);
+        showLines = !showLines;
+				//printf("Toggle lines: ");
+				//scanf("%d", &showLines);
 				break;
 			case 'c':
 			case 'C':
-				printf("Clearing plane...");
 				clearCartesianPlane(plane);
 				break;
 		}
