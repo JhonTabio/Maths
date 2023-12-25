@@ -15,7 +15,7 @@ int resizeCartesianPlane(Plane *plane, int width, int height);
 void clearCartesianPlane(Plane *plane);
 char **createPlane(int width, int height);
 void destroyPlane(char **plane, int height);
-int resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height);
+char **resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height);
 void clearPlane(char **plane, int width, int height);
 void printPlane(char **plane, int width, int height, int lineFlag, int focus_x, int focus_y);
 
@@ -58,14 +58,17 @@ void printCartesianPlane(Plane *plane, int lineFlag)
 
 int resizeCartesianPlane(Plane *plane, int width, int height)
 {
-	int ret = resizePlane(plane->plane, plane->width, plane->height, width, height);
+	char **ret = resizePlane(plane->plane, plane->width, plane->height, width, height);
 
+  if(ret == NULL) return 0;
+
+  plane->plane = ret;
 	plane->width = width;
 	plane->height = height;
 
 	printf("END RESIZE\n");
 
-	return ret;
+	return 1;
 }
 
 void clearCartesianPlane(Plane *plane)
@@ -75,7 +78,7 @@ void clearCartesianPlane(Plane *plane)
 
 char **createPlane(int width, int height)
 {
-	// Add 1 to width to account for '0' in the horizontal axis
+	// Add 1 to height to account for '0' in the vertical axis
 	char **ret = (char **) malloc(height * sizeof(char *) + 1);
 
 	if(ret == NULL)
@@ -83,7 +86,7 @@ char **createPlane(int width, int height)
 
 	for(int i = 0; i < height; i++)
 	{
-		// Add 2 to the height to account for '0' in the vertical axis
+		// Add 2 to the width to account for '0' in the horizontal axis
 		// and account for the null terminator
 		ret[i] = (char *) malloc(width * sizeof(char) + 2);
 
@@ -101,7 +104,7 @@ void destroyPlane(char **plane, int height)
 	free(plane);
 }
 
-int resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height)
+char **resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height)
 {
 	printf("Starting resize\n");
 	int i;
@@ -111,9 +114,9 @@ int resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height
 		char *temp = (char *) realloc(plane[i], width * sizeof(char) + 2);
 
 		if(temp == NULL)
-			return 1;
+			return NULL;
 		
-		temp[width + 1] = '\0';
+		temp[width + 2] = '\0';
 		plane[i] = temp;
 		printf("Resize for %d [%d]\n", width, i);
 	}
@@ -121,7 +124,7 @@ int resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height
 	char **temp = (char **) realloc(plane, height * sizeof(char *) + 1);
 
 	if(temp == NULL)
-		return 1;
+		return NULL;
 
 	plane = temp;
 	printf("Resize for %d\n", height);
@@ -132,13 +135,13 @@ int resizePlane(char **plane, int oldWidth, int oldHeight, int width, int height
 		plane[i] = (char *) malloc(width * sizeof(char) + 2);
 
 		if(plane[i] == NULL)
-			return 1;
+			return NULL;
 
-		plane[i + 1] = NULL;
+		plane[i][width + 2] = '\0';
 		printf("New height %d\n", i);
 	}
 
-	return 0;
+	return plane;
 }
 
 void clearPlane(char **plane, int width, int height)
@@ -147,16 +150,13 @@ void clearPlane(char **plane, int width, int height)
 	{
 		for(int j = 0; j < width; j++)
 		{
-			printf("(%d, %d)\n", j, i);
-      if(plane[i] == NULL) printf("NULL HEIGHT\n");
-      //printf("%d", typeof(plane[i]));
-      if(plane[i][j] == '\0') printf("NULL WIDTH\n");
-      //printf("%d", typeof(plane[i][j]));
+			printf("(%d, %d)\n", i, j);
+      printf("Come on\n");
 			printf("%c\n", plane[i][j]);
 			plane[i][j] = 'X';
 			printf("X'd\n");
 		}
-		plane[i][width - 1] = '\0';
+		plane[i][width - 2] = '\0';
 	}
 }
 

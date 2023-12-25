@@ -51,7 +51,7 @@ int main()
 				int res = resizeCartesianPlane(plane, width, height);
 				printf("Res: %d\n", res);
 
-				if(res)
+				if(!res)
 				{
 				  printf("Destorying, resize was NULL");
 					destroyCartesianPlane(plane);
